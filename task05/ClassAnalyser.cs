@@ -13,7 +13,7 @@ public class ClassAnalyzer
     }
     public IEnumerable<string> GetPublicMethods() => _type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
         .Select(m => m.Name);
-    public IEnumerable<string> GetMethodParams(string methodname) => _type.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+    public IEnumerable<string?> GetMethodParams(string methodname) => _type.GetMethods(BindingFlags.Public | BindingFlags.Instance)
         .Where(m => m.Name == methodname)
         .SelectMany(m => new[] {
             m.ReturnType.Name
@@ -26,4 +26,5 @@ public class ClassAnalyzer
         .Select(p => p.Name);
     public bool HasAttribute<T>() where T : Attribute => _type.IsDefined(typeof(T));
 }
+
 
