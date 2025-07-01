@@ -62,3 +62,4 @@ public class StudentServiceTests
         Assert.Equal(2, result["ФИТ"].Count());
     }
 }
+

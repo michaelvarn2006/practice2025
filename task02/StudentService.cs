@@ -2,9 +2,9 @@
 
 public class Student
 {
-    public string Name { get; set; }
-    public string Faculty { get; set; }
-    public List<int> Grades { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Faculty { get; set; } = string.Empty;
+    public List<int> Grades { get; set; } = new List<int>();
 }
 
 public class StudentService
@@ -19,7 +19,7 @@ public class StudentService
 
     public IEnumerable<Student> GetStudentsOrderedByName() => _students.OrderBy(s => s.Name);
 
-    public ILookup<string, Student> GroupStudentsByFaculty() => _students.ToLookup(s => s.Faculty);
+    public ILookup<string, Student> GroupStudentsByFaculty() => _students.ToLookup(s => s.Faculty!);
 
     public string GetFacultyWithHighestAverageGrade()
     {
@@ -36,3 +36,4 @@ public class StudentService
         return SortedFaculties[0].Faculty;
     }
 }
+
