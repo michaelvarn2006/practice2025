@@ -51,9 +51,9 @@ public static class ReflectionHelper
         var versclassattr = type.GetCustomAttribute<VersionAttribute>();
         if (versclassattr != null)
         {
-            Console.WriteLine($"Версия: {versclassattr.Major}.{versclassattr.Minor}");
+            Console.WriteLine($"Version: {versclassattr.Major}.{versclassattr.Minor}");
         }
-        Console.WriteLine("Методы");
+        Console.WriteLine("Methods:");
         foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly))
         {
             var dispmethodattr = method.GetCustomAttribute<DisplayNameAttribute>();
@@ -62,7 +62,7 @@ public static class ReflectionHelper
                 Console.WriteLine(dispmethodattr.DisplayName);
             }
         }
-        Console.WriteLine("Свойства");
+        Console.WriteLine("Properties:");
         foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly))
         {
             var disppropattr = prop.GetCustomAttribute<DisplayNameAttribute>();
