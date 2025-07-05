@@ -43,6 +43,23 @@ public class AttributeReflectionTests
         Assert.Equal(0, attribute.Minor);
     }
 
+    [Fact]
+    public void PrintTypeInfo_OutputsCorrectInfo()
+    {
+        var output = new StringWriter();
+        Console.SetOut(output);
+        var expectedOutput =
+            "Пример класса" + Environment.NewLine +
+            "Version: 1.0" + Environment.NewLine +
+            "Methods:" + Environment.NewLine +
+            "Тестовый метод" + Environment.NewLine +
+            "Properties:" + Environment.NewLine +
+            "Числовое свойство" + Environment.NewLine;
 
+        ReflectionHelper.PrintTypeInfo(typeof(SampleClass));
+
+        Assert.Equal(expectedOutput, output.ToString());
+    }
 }
+
 
