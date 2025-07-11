@@ -60,8 +60,8 @@ public class UnitTest1
         Console.SetOut(output);
         CommandRunner.CommandRunner.Main();
         Assert.Contains("10", output.ToString());
-        Assert.Contains("/home/michael/practice20252/practice2025/TestDir/test1.txt", output.ToString());
-        Assert.Contains("/home/michael/practice20252/practice2025/TestDir/test2.txt", output.ToString());
+        Assert.Contains("/home/runner/work/practice2025/practice2025/TestDir/test2.txt", output.ToString());
+        Assert.Contains("/home/runner/work/practice2025/practice2025/TestDir/test1.txt", output.ToString());
     }
     [Fact]
     public void DirectorySizeCommand_ShouldThrowArgumentNullException_WhenDirectoryNameIsNull()
