@@ -4,10 +4,10 @@ namespace task13;
 
 public class Subject
 {
-    public string Name { get; set; }
+    public string? Name { get; set; }
     public int Grade { get; set; }
 
-    public Subject(string Name, int Grade)
+    public Subject(string? Name, int Grade)
     {
         this.Name = Name;
         this.Grade = Grade;
@@ -16,48 +16,50 @@ public class Subject
 
 public class Student
 {
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
     public DateTime BirthDate { get; set; }
     public List<Subject> Grades { get; set; }
 
-    public Student(string FirstName, string LastName, DateTime BirthDate, List<Subject> Grades)
+    public Student(string? firstName, string? lastName, DateTime birthDate, List<Subject> grades)
     {
-        this.FirstName = FirstName;
-        this.LastName = LastName;
-        this.BirthDate = BirthDate;
-        this.Grades = Grades;
+        this.FirstName = firstName;
+        this.LastName = lastName;
+        this.BirthDate = birthDate;
+        this.Grades = grades;
     }
 
     public void Validate()
     {
         if (string.IsNullOrWhiteSpace(FirstName))
-            throw new ArgumentException("Имя обязательно");
+            throw new ArgumentException("First name is required");
 
         if (string.IsNullOrWhiteSpace(LastName))
-            throw new ArgumentException("Фамилия обязательна");
+            throw new ArgumentException("Last name is required");
 
         if (BirthDate > DateTime.Now)
-            throw new ArgumentException("Дата рождения не может быть в будущем");
+            throw new ArgumentException("Birth date cannot be in the future");
 
         if (BirthDate < new DateTime(1900, 1, 1))
-            throw new ArgumentException("Некорректная дата рождения");
+            throw new ArgumentException("Invalid birth date");
 
         if (Grades != null)
         {
+            if (Grades.Count == 0)
+                throw new ArgumentException("Student must have at least one subject");
             foreach (var subject in Grades)
             {
                 if (subject.Grade < 0 || subject.Grade > 100)
-                    throw new ArgumentException($"Оценка {subject.Grade} по предмету '{subject.Name}' недопустима");
-                if (subject.Name == null)
-                    throw new ArgumentException("Название предмета не должно быть null");
+                    throw new ArgumentException($"Grade {subject.Grade} for subject '{subject.Name}' is invalid");
+                if (string.IsNullOrWhiteSpace(subject.Name))
+                    throw new ArgumentException("Subject name must not be null or whitespace");
             }
         }
     }
 
     public override string ToString()
     {
-        return $"{LastName} {FirstName}, родился {BirthDate:dd.MM.yyyy}, предметов: {Grades?.Count ?? 0}";
+        return $"{LastName} {FirstName}, born {BirthDate:dd.MM.yyyy}, subjects: {Grades?.Count ?? 0}";
     }
 }
 
@@ -80,13 +82,13 @@ public class StudentSerialization
     public static Student DeserializeStudent(string path)
     {
         string json = File.ReadAllText(path);
-        return JsonConvert.DeserializeObject<Student>(json, settings) ?? throw new InvalidOperationException("Десериализация вернула null");
+        return JsonConvert.DeserializeObject<Student>(json, settings) ?? throw new InvalidOperationException("Deserialization returned null");
     }
 
     static void Main()
     {
-        var student = new Student("Михаил", "Варнавский", new DateTime(2006, 06, 13),
-            new List<Subject> { new Subject("Летняя практика", 4) });
+        var student = new Student("Michael", "Varnavsky", new DateTime(2006, 06, 13),
+            new List<Subject> { new Subject("Summer Practice", 4) });
 
         string filePath = "Student.json";
         SerializeStudent(student, filePath);
@@ -98,9 +100,9 @@ public class StudentSerialization
             loadedStudent.Validate();
             Console.WriteLine(loadedStudent);
         }
-        catch (ArgumentException ex)
+        catch (ArgumentException exception)
         {
-            Console.WriteLine($"Ошибка валидации: {ex.Message}");
+            Console.WriteLine($"Validation error: {exception.Message}");
         }
         File.Delete(filePath);
     }

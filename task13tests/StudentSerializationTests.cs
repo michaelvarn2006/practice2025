@@ -10,9 +10,8 @@ public class UnitTest1
     [Fact]
     public void SerializeAndDeserialize_ShouldReturnEquivalentStudent()
     {
-
-        var student = new Student("Иван", "Иванов", new DateTime(2000, 1, 1),
-            new List<Subject> { new Subject("Математика", 5) });
+        var student = new Student("Michael", "Varnavsky", new DateTime(2006, 6, 13),
+            new List<Subject> { new Subject("Summer Practice", 4) });
 
         var path = "test_student.json";
         StudentSerialization.SerializeStudent(student, path);
@@ -25,103 +24,105 @@ public class UnitTest1
         Assert.Equal(student.Grades.Count, deserialized.Grades.Count);
         Assert.Equal(student.Grades[0].Name, deserialized.Grades[0].Name);
         Assert.Equal(student.Grades[0].Grade, deserialized.Grades[0].Grade);
+
+        File.Delete(path);
     }
     [Fact]
     public void Validate_ShouldThrowWhenFirstNameIsEmpty()
     {
-        var invalidStudent = new Student(
+        var student = new Student(
             "",
-            "Иванов",
-            new DateTime(2000, 1, 1),
-            new List<Subject> { new Subject("Математика", 5) }
+            "Varnavsky",
+            new DateTime(2006, 6, 13),
+            new List<Subject> { new Subject("Summer Practice", 4) }
         );
 
-        var ex = Assert.Throws<ArgumentException>(() => invalidStudent.Validate());
-        Assert.Contains("Имя обязательно", ex.Message);
+        var exception = Assert.Throws<ArgumentException>(() => student.Validate());
+        Assert.Contains("First name is required", exception.Message);
     }
 
     [Fact]
     public void Validate_ShouldThrowWhenLastNameIsNull()
     {
-        var invalidStudent = new Student(
-            "Иван",
+        var student = new Student(
+            "Michael",
             null,
-            new DateTime(2000, 1, 1),
-            new List<Subject> { new Subject("Математика", 5) }
+            new DateTime(2006, 6, 13),
+            new List<Subject> { new Subject("Summer Practice", 4) }
         );
 
-        var ex = Assert.Throws<ArgumentException>(() => invalidStudent.Validate());
-        Assert.Contains("Фамилия обязательна", ex.Message);
+        var exception = Assert.Throws<ArgumentException>(() => student.Validate());
+        Assert.Contains("Last name is required", exception.Message);
     }
 
     [Fact]
     public void Validate_ShouldThrowWhenBirthDateInFuture()
     {
-        var invalidStudent = new Student(
-            "Иван",
-            "Иванов",
+        var student = new Student(
+            "Michael",
+            "Varnavsky",
             DateTime.Now.AddDays(1),
-            new List<Subject> { new Subject("Математика", 5) }
+            new List<Subject> { new Subject("Summer Practice", 4) }
         );
 
-        var ex = Assert.Throws<ArgumentException>(() => invalidStudent.Validate());
-        Assert.Contains("не может быть в будущем", ex.Message);
+        var exception = Assert.Throws<ArgumentException>(() => student.Validate());
+        Assert.Contains("Birth date cannot be in the future", exception.Message);
     }
 
     [Fact]
     public void Validate_ShouldThrowWhenBirthDateTooOld()
     {
-        var invalidStudent = new Student(
-            "Иван",
-            "Иванов",
+        var student = new Student(
+            "Michael",
+            "Varnavsky",
             new DateTime(1899, 12, 31),
-            new List<Subject> { new Subject("Математика", 5) }
+            new List<Subject> { new Subject("Summer Practice", 4) }
         );
 
-        var ex = Assert.Throws<ArgumentException>(() => invalidStudent.Validate());
-        Assert.Contains("Некорректная дата рождения", ex.Message);
+        var exception = Assert.Throws<ArgumentException>(() => student.Validate());
+        Assert.Contains("Invalid birth date", exception.Message);
     }
 
     [Fact]
     public void Validate_ShouldThrowWhenGradeTooLow()
     {
-        var invalidStudent = new Student(
-            "Иван",
-            "Иванов",
-            new DateTime(2000, 1, 1),
-            new List<Subject> { new Subject("Математика", -1) }
+        var student = new Student(
+            "Michael",
+            "Varnavsky",
+            new DateTime(2006, 6, 13),
+            new List<Subject> { new Subject("Summer Practice", -1) }
         );
 
-        var ex = Assert.Throws<ArgumentException>(() => invalidStudent.Validate());
-        Assert.Contains("недопустима", ex.Message);
+        var exception = Assert.Throws<ArgumentException>(() => student.Validate());
+        Assert.Contains($"Grade -1 for subject '{student.Grades[0].Name}' is invalid", exception.Message);
     }
 
     [Fact]
     public void Validate_ShouldThrowWhenGradeTooHigh()
     {
-        var invalidStudent = new Student(
-            "Иван",
-            "Иванов",
-            new DateTime(2000, 1, 1),
-            new List<Subject> { new Subject("Математика", 101) }
+        var student = new Student(
+            "Michael",
+            "Varnavsky",
+            new DateTime(2006, 6, 13),
+            new List<Subject> { new Subject("Summer Practice", 101) }
         );
 
-        var ex = Assert.Throws<ArgumentException>(() => invalidStudent.Validate());
-        Assert.Contains("недопустима", ex.Message);
+        var exception = Assert.Throws<ArgumentException>(() => student.Validate());
+        Assert.Contains($"Grade 101 for subject '{student.Grades[0].Name}' is invalid", exception.Message);
     }
 
     [Fact]
     public void Validate_ShouldThrowWhenSubjectNameIsNull()
     {
-        var invalidStudent = new Student(
-            "Иван",
-            "Иванов",
-            new DateTime(2000, 1, 1),
-            new List<Subject> { new Subject(null, 5) }
+        var student = new Student(
+            "Michael",
+            "Varnavsky",
+            new DateTime(2006, 6, 13),
+            new List<Subject> { new Subject(null, 4) }
         );
 
-        var ex = Assert.Throws<ArgumentException>(() => invalidStudent.Validate());
-        Assert.Contains("Название предмета", ex.Message);
+        var exception = Assert.Throws<ArgumentException>(() => student.Validate());
+        Assert.Contains("Subject name must not be null or whitespace", exception.Message);
     }
 
     [Fact]
@@ -149,11 +150,12 @@ public class UnitTest1
         var path = "null.json";
         File.WriteAllText(path, "null");
 
-        var ex = Assert.Throws<InvalidOperationException>(() =>
+        var exception = Assert.Throws<InvalidOperationException>(() =>
             StudentSerialization.DeserializeStudent(path));
-        Assert.Contains("Десериализация вернула null", ex.Message);
+        Assert.Contains("Deserialization returned null", exception.Message);
 
         File.Delete(path);
     }
 }
+
 
