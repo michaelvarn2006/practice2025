@@ -8,6 +8,9 @@ namespace PluginLoader
     {
         public void LoadAndExecutePlugins(string path)
         {
+            if (!Directory.Exists(path))
+                throw new DirectoryNotFoundException($"Directory '{path}' not found.");
+
             var pluginDlls = Directory.EnumerateFiles(path, "*.dll", SearchOption.TopDirectoryOnly)
                 .Where(f => Path.GetFileName(f) != "PluginInterface.dll" && Path.GetFileName(f) != "task10.dll")
                 .ToList();

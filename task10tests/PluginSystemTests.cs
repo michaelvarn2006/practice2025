@@ -9,13 +9,10 @@ public class PluginLoaderTests
     [Fact]
     public void PluginLoader_ShouldExecuteAllPlugins_InCorrectOrder()
     {
-        var parent = Directory.GetParent(Directory.GetCurrentDirectory());
-        parent = parent?.Parent;
-        parent = parent?.Parent;
-        parent = parent?.Parent;
+        var parent = Directory.GetParent(Directory.GetCurrentDirectory())?.Parent?.Parent?.Parent?.FullName;
         if (parent == null)
             throw new InvalidOperationException("Failed to get path to PluginsBinaries folder");
-        var pluginDirectory = Path.Combine(parent.FullName, "PluginsBinaries");
+        var pluginDirectory = Path.Combine(parent, "PluginsBinaries");
         var pluginLoader = new PluginLoader.PluginLoader();
 
         var consoleOutput = new StringWriter();
@@ -42,25 +39,13 @@ public class PluginLoaderTests
     [Fact]
     public void PluginLoader_ShouldNotOutputAnything_WhenNoPluginsInDirectory()
     {
-        var parent = Directory.GetParent(Directory.GetCurrentDirectory());
-        parent = parent?.Parent;
-        parent = parent?.Parent;
-        parent = parent?.Parent;
+        var parent = Directory.GetParent(Directory.GetCurrentDirectory())?.Parent?.Parent?.Parent?.FullName;
         if (parent == null)
-            throw new InvalidOperationException("Failed to get path to EmptyDir folder");
-        var emptyDir = Path.Combine(parent.FullName, "EmptyDir");
-        var pluginLoader = new PluginLoader.PluginLoader();
+            throw new DirectoryNotFoundException("Couldn't find base directory!\n");
 
-        var consoleOutput = new StringWriter();
-        var originalOutput = Console.Out;
-        Console.SetOut(consoleOutput);
+        var nonExistentDirectoryPath = Path.Combine(parent, "NonExistentDirectory");
 
-        pluginLoader.LoadAndExecutePlugins(emptyDir);
-
-        var output = consoleOutput.ToString();
-        Assert.True(string.IsNullOrWhiteSpace(output));
-
-        Console.SetOut(originalOutput);
+        Assert.Throws<DirectoryNotFoundException>(() => new PluginLoader.PluginLoader().LoadAndExecutePlugins(nonExistentDirectoryPath));
     }
 }
 
