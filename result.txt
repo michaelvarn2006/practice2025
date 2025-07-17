@@ -1,0 +1,5 @@
+Step size: 0,1
+Optimal thread count: 5 (more data in outputData.json) 
+Multithreaded minimum time: 0,0309 ms (more data in outputData.json) 
+Single-threaded minimum time: 0,0550 ms (more data in outputData.json) 
+Time diff: 43,79%
