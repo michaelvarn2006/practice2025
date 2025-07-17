@@ -3,45 +3,45 @@ namespace task14;
 
 public class DefiniteIntegral
 {
-
-    public static double Solve(double a, double b, Func<double, double> function, double step, int threadsNumber)
+     public static double Solve(double a, double b, Func<double, double> function, double step, int threadsnumber)
     {
-        double result = 0.0;
-        int totalSteps = (int)((b - a) / step);
-        double stepCounter = (b - a) / totalSteps;
-        int stepsPerThread = totalSteps / threadsNumber;
-        Thread[] threads = new Thread[threadsNumber];
-        Barrier barrier = new Barrier(threadsNumber + 1);
+        double[] results = new double[threadsnumber];
 
-        for (int t = 0; t < threadsNumber; t++)
+        double lenght = (b - a) / threadsnumber;
+
+        Parallel.For(0, threadsnumber, i =>
         {
-            int localStartStep = t * stepsPerThread;
-            int localTotalSteps = stepsPerThread;
-            threads[t] = new Thread(() =>
+            double start = a + i * lenght;
+            double end;
+            if (i == threadsnumber - 1)
             {
-                double localSum = 0.0;
-                for (int i = 0; i < localTotalSteps; i++)
-                {
-                    int idx = localStartStep + i;
-                    double x0 = a + idx * stepCounter;
-                    double x1 = x0 + stepCounter;
-                    double y0 = function(x0);
-                    double y1 = function(x1);
-                    localSum += (y0 + y1) * (x1 - x0) / 2.0;
-                }
-                double oldResult, newResult;
-                do
-                {
-                    oldResult = result;
-                    newResult = oldResult + localSum;
-                } while (Interlocked.CompareExchange(ref result, newResult, oldResult) != oldResult);
-                barrier.SignalAndWait();
-            });
-            threads[t].Start();
-        }
+                end = b;
+            }
+            else
+            {
+                end = start + lenght;
+            }
 
-        barrier.SignalAndWait();
-        return result;
+            results[i] = SolveForOneThread(start, end, function, step);
+        });
+
+        return results.Sum();
+    }
+
+    public static double SolveForOneThread(double a, double b, Func<double, double> function, double step)
+    {
+        double current = 0.0;
+        double next = 0.0;
+        double nextVal = 0.0;
+
+        for (double x = a; x < b; x += step)
+        {
+            next = Math.Min(x + step, b);
+            nextVal = function(next);
+
+            current += (function(x) + nextVal) * (next - x) / 2.0;
+        }
+        return current;
     }
 }
 
