@@ -33,10 +33,11 @@ public class LongCommandsTests
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         while (commands.Any(c => c.Counter < callCommand) && stopwatch.ElapsedMilliseconds < 5000)
             Thread.Sleep(10);
-        Assert.True(stopwatch.ElapsedMilliseconds < 5000, "Test timed out: commands did not finish in 5 seconds");
-
         server.Stop();
         Thread.Sleep(100);
+        Assert.True(!commands.Any(c => c.Counter < callCommand), "Not all commands finished");
+        Assert.True(stopwatch.ElapsedMilliseconds < 5000, "Test timed out: commands did not finish in 5 seconds");
+
         Console.SetOut(originalOut);
 
         string output = sw.ToString();
