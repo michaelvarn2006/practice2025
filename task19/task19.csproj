@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\task18\task18.csproj" />
+    <ProjectReference Include="..\TestCommand\TestCommand.csproj" />
+    <ProjectReference Include="..\RoundRobinScheduler\RoundRobinScheduler.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ScottPlot" Version="5.0.55" />
+  </ItemGroup>
+
+  <PropertyGroup>
+  <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
