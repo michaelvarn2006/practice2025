@@ -30,7 +30,7 @@ public class TestCommand : ICommand.ICommand, ISteppable.ISteppable
         {
             Console.WriteLine($"Command {Id} call {++Counter}");
             if (Counter < MaxCount)
-                Scheduler.Add(this); // <-- добавлять только если ещё не завершена!
+                Scheduler.Add(this);
             else
                 stopwatch.Stop();
         }

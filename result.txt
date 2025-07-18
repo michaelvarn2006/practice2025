@@ -1,7 +1,6 @@
-Отчет:
-Количество команд: 5
-Вызовов каждой команды: 3
-Минимальное время выполнения: 104 мс
-Максимальное время выполнения: 121 мс
-Среднее время на команду: 107,40 мс
-Время выполнения всех команд: 537 мс
+Number of commands: 5
+Calls per command: 3
+Minimum execution time: 0 ms
+Maximum execution time: 31 ms
+Average time per command: 6,20 ms
+Total execution time: 31 ms
