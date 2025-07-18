@@ -30,8 +30,10 @@ public class LongCommandsTests
             scheduler.Add(commands[i]);
         }
 
-        while (commands.Any(c => c.Counter < callCommand))
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        while (commands.Any(c => c.Counter < callCommand) && stopwatch.ElapsedMilliseconds < 5000)
             Thread.Sleep(10);
+        Assert.True(stopwatch.ElapsedMilliseconds < 5000, "Test timed out: commands did not finish in 5 seconds");
 
         server.Stop();
         Thread.Sleep(100);
@@ -42,7 +44,7 @@ public class LongCommandsTests
         {
             for (int j = 1; j <= callCommand; j++)
             {
-                Assert.Contains($"Поток {i} вызов {j}", output);
+                Assert.Contains($"Command {i} call {j}", output);
             }
         }
     }
