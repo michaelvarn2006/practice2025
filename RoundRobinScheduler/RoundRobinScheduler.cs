@@ -6,7 +6,18 @@ using ISteppable;
 public class RoundRobinScheduler : IScheduler.IScheduler
 {
     private readonly Queue<ICommand> _commands = new();
-    public bool HasCommand() => _commands.Count > 0;
+    public bool HasCommand()
+    {
+        int count = _commands.Count;
+        for (int i = 0; i < count; i++)
+        {
+            var cmd = _commands.Dequeue();
+            if (cmd is ISteppable steppable && steppable.IsDone)
+                continue;
+            _commands.Enqueue(cmd);
+        }
+        return _commands.Count > 0;
+    }
     public ICommand? Select()
     {
         int count = _commands.Count;
