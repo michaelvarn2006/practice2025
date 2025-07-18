@@ -12,7 +12,7 @@ public class CommandScheduler
     private readonly IScheduler.IScheduler _scheduler;
     private readonly Queue<ICommand.ICommand> _newCommands = new();
     private readonly object _lock = new();
-    private Thread _thread;
+    public Thread _thread;
     private bool _running = true;
 
     public CommandScheduler(IScheduler.IScheduler scheduler)
