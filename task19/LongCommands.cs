@@ -35,29 +35,28 @@ public class CommandGraph
         }
 
         server.Stop();
-        Thread.Sleep(100); // Дать потоку завершиться
+        Thread.Sleep(100);
 
         double[] times = commands.Select(cmd => (double)cmd.ElapsedMs).ToArray();
         int[] commandNumbers = Enumerable.Range(1, commandCount).ToArray();
 
         var plot = new ScottPlot.Plot();
         plot.Add.Scatter(times, commandNumbers);
-        plot.Title("Выполнение TestCommand");
-        plot.XLabel("Время (мс)");
-        plot.YLabel("Количество команд");
-        plot.SavePng("./result.png", 600, 400);
+        plot.Title("TestCommand Execution");
+        plot.XLabel("Time (ms)");
+        plot.YLabel("Number of commands");
+        plot.SavePng("./result.png", 600, 600);
 
         double totalTime = times.Sum();
         double averageTime = times.Average();
 
         string report =
-            $"Отчет:\n" +
-            $"Количество команд: {commandCount}\n" +
-            $"Вызовов каждой команды: {callCommand}\n" +
-            $"Минимальное время выполнения: {times.Min()} мс\n" +
-            $"Максимальное время выполнения: {times.Max()} мс\n" +
-            $"Среднее время на команду: {averageTime:F2} мс\n" +
-            $"Время выполнения всех команд: {totalTime} мс\n";
+            $"Number of commands: {commandCount}\n" +
+            $"Calls per command: {callCommand}\n" +
+            $"Minimum execution time: {times.Min()} ms\n" +
+            $"Maximum execution time: {times.Max()} ms\n" +
+            $"Average time per command: {averageTime:F2} ms\n" +
+            $"Total execution time: {totalTime} ms\n";
 
         File.WriteAllText("./result.txt", report);
     }

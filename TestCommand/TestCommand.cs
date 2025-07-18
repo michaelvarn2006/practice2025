@@ -29,7 +29,7 @@ public class TestCommand : ICommand.ICommand, ISteppable.ISteppable
         }
         if (Counter < MaxCount)
         {
-            Console.WriteLine($"Поток {Id} вызов {++Counter}");
+            Console.WriteLine($"Command {Id} call {++Counter}");
             Scheduler.Add(this);
         }
         else
