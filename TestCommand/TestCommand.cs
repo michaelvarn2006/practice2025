@@ -24,17 +24,15 @@ public class TestCommand : ICommand.ICommand, ISteppable.ISteppable
     public void Execute()
     {
         if (Counter == 0)
-        {
             stopwatch.Start();
-        }
+
         if (Counter < MaxCount)
         {
             Console.WriteLine($"Command {Id} call {++Counter}");
-            Scheduler.Add(this);
-        }
-        else
-        {
-            stopwatch.Stop();
+            if (Counter < MaxCount)
+                Scheduler.Add(this); // <-- добавлять только если ещё не завершена!
+            else
+                stopwatch.Stop();
         }
     }
 }
