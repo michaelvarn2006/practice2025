@@ -74,7 +74,7 @@ public class ServerThread
     public void HardStop()
     {
         if (Thread.CurrentThread != _workerThread)
-            throw new InvalidOperationException("Immediate stop must be called from worker thread");
+            throw new InvalidOperationException("Hard stop must be called from worker thread");
         lock (_lock)
         {
             _active = false;
@@ -85,7 +85,7 @@ public class ServerThread
     public void SoftStop()
     {
         if (Thread.CurrentThread != _workerThread)
-            throw new InvalidOperationException("Graceful stop must be called from worker thread");
+            throw new InvalidOperationException("Soft stop must be called from worker thread");
         lock (_lock)
         {
             _pendingShutdown = true;
@@ -106,5 +106,16 @@ public class SoftStop : ICommand.ICommand
     private readonly ServerThread _worker;
     public SoftStop(ServerThread worker) { _worker = worker; }
     public void Execute() => _worker.SoftStop();
+}
+
+public class DummyAction : ICommand.ICommand
+{
+    public static int Counter = 0;
+    public void Execute() { Interlocked.Increment(ref Counter); Thread.Sleep(50); }
+}
+
+public class FailingCommand : ICommand.ICommand
+{
+    public void Execute() => throw new InvalidOperationException("Test exception");
 }
 
