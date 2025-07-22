@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\IScheduler\IScheduler.csproj" />
     <ProjectReference Include="..\ICommand\ICommand.csproj" />
+    <ProjectReference Include="..\ISteppable\ISteppable.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using IScheduler;
 using ICommand;
+using ISteppable;
 
 namespace task18;
 
@@ -71,5 +72,14 @@ public class CommandScheduler
             }
         }
     }
+}
+
+public class StepCommand : ICommand.ICommand, ISteppable.ISteppable
+{
+    public int StepsLeft;
+    public int Executed = 0;
+    public StepCommand(int steps) { StepsLeft = steps; }
+    public void Execute() { if (StepsLeft > 0) { StepsLeft--; Executed++; } }
+    public bool IsDone => StepsLeft == 0;
 }
 
