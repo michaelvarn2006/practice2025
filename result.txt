@@ -1,0 +1,6 @@
+Number of commands: 5
+Calls per command: 3
+Minimum execution time: 0 ms
+Maximum execution time: 17 ms
+Average time per command: 3,40 ms
+Total execution time: 17 ms
